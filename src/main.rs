@@ -1,4 +1,7 @@
+mod player;
 mod state;
+
+use player::*;
 use state::*;
 
 fn main() {
@@ -10,7 +13,7 @@ fn main() {
 
     println!("{:?}", s);
 
-    s = s.action(Action::SPLIT(Hand::LEFT, 1));
+    s = s.action(Action::SPLIT(Hand::RIGHT, 1));
 
     println!("{:?}", s);
 }
