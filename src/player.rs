@@ -88,10 +88,25 @@ impl<const MAX: usize> Default for Player<MAX> {
 }
 
 impl<const MAX: usize> Player<MAX> {
-    fn deconstruct(self) -> PlayerD<MAX> {
+    pub const MAX_PLAYER_VAL: usize = MAX * (MAX + 1) / 2;
+
+    fn deconstruct(mut self) -> PlayerD<MAX> {
+        let mut left = 0;
+        for cap in (2..MAX + 1).rev() {
+            if self.val < cap {
+                return PlayerD::<MAX> {
+                    left,
+                    right: self.val + MAX - cap,
+                };
+            }
+
+            left += 1;
+            self.val -= cap;
+        }
+
         PlayerD {
-            left: self.val / MAX,
-            right: self.val % MAX,
+            left: MAX - 1,
+            right: MAX - 1,
         }
     }
 
