@@ -120,17 +120,18 @@ impl<const MAX: usize> Player<MAX> {
         other_player: Player<MAX>,
         other_hand: Hand,
     ) -> Option<Player<MAX>> {
-        let pd = self.deconstruct();
-        let other_pd = other_player.deconstruct();
+        let player_deconst = self.deconstruct();
+        let other_player_deconst = other_player.deconstruct();
 
-        let new_pd = pd.attack(attacking_hand, other_pd, other_hand);
-        Self::construct(new_pd)
+        let new_player_deconst =
+            player_deconst.attack(attacking_hand, other_player_deconst, other_hand);
+        Self::construct(new_player_deconst)
     }
 
     pub fn split(self, hand: Hand, amount: usize) -> Option<Player<MAX>> {
-        let pd = self.deconstruct();
+        let player_deconst = self.deconstruct();
 
-        let new_pd = pd.split(hand, amount);
-        Self::construct(new_pd)
+        let new_player_deconst = player_deconst.split(hand, amount);
+        Self::construct(new_player_deconst)
     }
 }
