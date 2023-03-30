@@ -95,18 +95,22 @@ impl<const MAX: usize> Player<MAX> {
         }
     }
 
-    fn construct(mut player: PlayerD<MAX>) -> Player<MAX> {
-        // normalize
-        player.left %= MAX;
-        player.right %= MAX;
-        if player.right < player.left {
-            let tmp = player.left;
-            player.left = player.right;
-            player.right = tmp;
-        }
+    fn construct(opt_player: Option<PlayerD<MAX>>) -> Option<Player<MAX>> {
+        if let Some(mut player) = opt_player {
+            // normalize
+            player.left %= MAX;
+            player.right %= MAX;
+            if player.right < player.left {
+                let tmp = player.left;
+                player.left = player.right;
+                player.right = tmp;
+            }
 
-        Player {
-            val: player.left * MAX + player.right,
+            Some(Player {
+                val: player.left * MAX + player.right,
+            })
+        } else {
+            None
         }
     }
 
@@ -119,20 +123,14 @@ impl<const MAX: usize> Player<MAX> {
         let pd = self.deconstruct();
         let other_pd = other_player.deconstruct();
 
-        if let Some(new_pd) = pd.attack(attacking_hand, other_pd, other_hand) {
-            Some(Self::construct(new_pd))
-        } else {
-            None
-        }
+        let new_pd = pd.attack(attacking_hand, other_pd, other_hand);
+        Self::construct(new_pd)
     }
 
     pub fn split(self, hand: Hand, amount: usize) -> Option<Player<MAX>> {
         let pd = self.deconstruct();
 
-        if let Some(new_pd) = pd.split(hand, amount) {
-            Some(Self::construct(new_pd))
-        } else {
-            None
-        }
+        let new_pd = pd.split(hand, amount);
+        Self::construct(new_pd)
     }
 }
