@@ -4,19 +4,20 @@ pub enum Hand {
     RIGHT,
 }
 
+// Player Deconstructed
 #[derive(Debug)]
-struct PlayerDeconstructed<const MAX: usize> {
+struct PlayerD<const MAX: usize> {
     left: usize,
     right: usize,
 }
 
-impl<const MAX: usize> PlayerDeconstructed<MAX> {
+impl<const MAX: usize> PlayerD<MAX> {
     fn attack(
         self,
         attacking_hand: Hand,
-        mut other_player: PlayerDeconstructed<MAX>,
+        mut other_player: PlayerD<MAX>,
         other_hand: Hand,
-    ) -> Option<PlayerDeconstructed<MAX>> {
+    ) -> Option<PlayerD<MAX>> {
         let amount = match attacking_hand {
             Hand::LEFT => self.left,
             Hand::RIGHT => self.right,
@@ -42,7 +43,7 @@ impl<const MAX: usize> PlayerDeconstructed<MAX> {
         Some(other_player)
     }
 
-    fn split(mut self, hand: Hand, amount: usize) -> Option<PlayerDeconstructed<MAX>> {
+    fn split(mut self, hand: Hand, amount: usize) -> Option<PlayerD<MAX>> {
         match hand {
             Hand::LEFT => {
                 self.left -= amount;
@@ -76,7 +77,7 @@ pub struct Player<const MAX: usize> {
 impl<const MAX: usize> std::fmt::Debug for Player<MAX> {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> Result<(), std::fmt::Error> {
         let p = self.deconstruct();
-        write!(f, "Player: {{ left: {}, right: {} }}", p.left, p.right)
+        p.fmt(f)
     }
 }
 
@@ -87,14 +88,14 @@ impl<const MAX: usize> Default for Player<MAX> {
 }
 
 impl<const MAX: usize> Player<MAX> {
-    fn deconstruct(self) -> PlayerDeconstructed<MAX> {
-        PlayerDeconstructed {
+    fn deconstruct(self) -> PlayerD<MAX> {
+        PlayerD {
             left: self.val / MAX,
             right: self.val % MAX,
         }
     }
 
-    fn construct(mut player: PlayerDeconstructed<MAX>) -> Player<MAX> {
+    fn construct(mut player: PlayerD<MAX>) -> Player<MAX> {
         // normalize
         player.left %= MAX;
         player.right %= MAX;
